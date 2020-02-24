@@ -114,5 +114,52 @@ typedef struct
 }GPIO_RegDef_t;
 
 
+typedef struct
+{
+    __vo uint32_t   CR;             /* Clock control register: Reserved must be kept at reset value */
+    __vo uint32_t   PLLCFGR;        /* This register is used to configure the PLL clock outputs */
+    __vo uint32_t   CFGR;           /* RCC clock configuration register */
+    __vo uint32_t   CIR;            /* RCC clock interrupt register */
+    __vo uint32_t   AHB1RSTR;       /* RCC AHB1 peripheral reset register */
+    __vo uint32_t   AHB2RSTR;       /* RCC AHB2 peripheral reset register */
+    __vo uint32_t   AHB3RSTR;       /* RCC AHB3 peripheral reset register */
+    uint32_t        RESERVED0;      /* this field is reserved */
+    __vo uint32_t   APB1RSTR;       /* RCC APB1 peripheral reset register */
+    __vo uint32_t   APB2RSTR;       /* RCC APB2 peripheral reset register */
+    uint32_t        RESERVED1[2];   /* this field is reserved */
+    __vo uint32_t   AHB1ENR;        /* RCC AHB1 peripheral clock enable register */
+    __vo uint32_t   AHB2ENR;        /* RCC AHB2 peripheral clock enable register */
+    __vo uint32_t   AHB3ENR;        /* RCC AHB3 peripheral clock enable register */
+    uint32_t        RESERVED2;      /* this field is reserved */
+    __vo uint32_t   APB1ENR;        /* RCC APB1 peripheral clock enable register */
+    __vo uint32_t   APB2ENR;        /* RCC APB2 peripheral clock enable register */
+    uint32_t        RESERVED3[2];   /* this field is reserved */
+    __vo uint32_t   AHB1LPENR;      /* RCC AHB1 peripheral clock enable in low power mode register */
+    __vo uint32_t   AHB2LPENR;      /* RCC AHB2 peripheral clock enable in low power mode register */
+    __vo uint32_t   AHB3LPENR;      /* RCC AHB3 peripheral clock enable in low power mode register */
+    uint32_t        RESERVED4;      /* this field is reserved */
+    __vo uint32_t   APB1LPENR;      /* RCC APB1 peripheral clock enable in low power mode register */
+    __vo uint32_t   APB2LPENR;      /* RCC APB2 peripheral clock enable in low power mode register */
+    uint32_t        RESERVED5[2];   /* this field is reserved */
+    __vo uint32_t   BDCR;           /* RCC Backup domain control register */
+    __vo uint32_t   CSR;            /* RCC clock control & status register */
+    uint32_t        RESERVED6[2];   /* this field is reserved */
+    __vo uint32_t   SSCGR;          /* RCC spread spectrum clock generation register */
+    __vo uint32_t   PLLI2SCFGR;     /* RCC PLLI2S configuration register */
+
+}RCC_RegDef_t;
+
+/**
+ * Peripheral definitions (Peripheral base addresses typecasted to xxx_RegDef_t)
+ */
+#define GPIOA               ((GPIO_RegDef_t*)GPIOA_BASEADDR)
+#define GPIOB               ((GPIO_RegDef_t*)GPIOB_BASEADDR)
+#define GPIOC               ((GPIO_RegDef_t*)GPIOC_BASEADDR)
+#define GPIOD               ((GPIO_RegDef_t*)GPIOD_BASEADDR)
+#define GPIOE               ((GPIO_RegDef_t*)GPIOE_BASEADDR)
+#define GPIOF               ((GPIO_RegDef_t*)GPIOF_BASEADDR)
+#define GPIOG               ((GPIO_RegDef_t*)GPIOG_BASEADDR)
+#define GPIOH               ((GPIO_RegDef_t*)GPIOH_BASEADDR)
+#define GPIOI               ((GPIO_RegDef_t*)GPIOI_BASEADDR)
 
 #endif /* INC_STM32F407XX_H_ */
