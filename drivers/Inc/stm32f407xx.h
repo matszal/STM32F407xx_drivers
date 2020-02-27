@@ -162,7 +162,6 @@ typedef struct
 #define GPIOG               ((GPIO_RegDef_t*)GPIOG_BASEADDR)
 #define GPIOH               ((GPIO_RegDef_t*)GPIOH_BASEADDR)
 #define GPIOI               ((GPIO_RegDef_t*)GPIOI_BASEADDR)
-
 #define RCC                 ((RCC_RegDef_t*)RCC_BASEADDR)
 
 /**
@@ -246,5 +245,13 @@ typedef struct
  * Clock disable macros for SYSCFG
  */
 #define SYSFCG_PCLK_DI()                (RCC->APB2ENR &= ~(1<<14))
+
+// generic macros
+#define ENABLE                          1
+#define DISABLE                         0
+#define SET                             ENABLE
+#define RESET                           DISABLE
+#define GPIO_PIN_SET                    SET
+#define GPIO_PIN_RESET                  RESET
 
 #endif /* INC_STM32F407XX_H_ */
