@@ -25,7 +25,84 @@
  ***********************************************************************/
 void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
 {
-
+    if (EnorDi == ENABLE)
+    {
+        if(pGPIOx == GPIOA)
+        {
+            GPIOA_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOB)
+        {
+            GPIOB_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOC)
+        {
+            GPIOC_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOD)
+        {
+            GPIOD_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOE)
+        {
+            GPIOE_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOF)
+        {
+            GPIOF_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOG)
+        {
+            GPIOG_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOH)
+        {
+            GPIOH_PCLK_EN();
+        }
+        else if (pGPIOx == GPIOI)
+        {
+            GPIOI_PCLK_EN();
+        }        
+    }
+    else
+    {
+        if(pGPIOx == GPIOA)
+        {
+            GPIOA_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOB)
+        {
+            GPIOB_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOC)
+        {
+            GPIOC_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOD)
+        {
+            GPIOD_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOE)
+        {
+            GPIOE_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOF)
+        {
+            GPIOF_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOG)
+        {
+            GPIOG_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOH)
+        {
+            GPIOH_PCLK_DI();
+        }
+        else if (pGPIOx == GPIOI)
+        {
+            GPIOI_PCLK_DI();
+        }        
+    }   
 }
 
 /**
@@ -44,6 +121,45 @@ void GPIO_PeriClockControl(GPIO_RegDef_t *pGPIOx, uint8_t EnorDi)
  ***********************************************************************/
 void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
 {
+    uint32_t temp = 0;
+
+    //1. Configure the mode of the gpio pin
+    if(pGPIOHandle->GPIO_PinConfig.GPIO_PinMode <= GPIO_MODE_ANALOG)
+    {
+        temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinMode << (2* pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+        pGPIOHandle->pGPIOx->MODER &= ~(0x3 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); //clearing bit
+        pGPIOHandle->pGPIOx->MODER |= temp; //setting bit
+    }
+    else
+    {
+        // interrupt part, will add soon!
+    }
+
+    //2. Configure the speed
+    temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinSpeed << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+    pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); //clearing bit
+    pGPIOHandle->pGPIOx->OSPEEDR |= temp; //setting bit
+    
+    //3. Configure the pd pu settings
+    temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinPuPdControl << (2 * pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber));
+    pGPIOHandle->pGPIOx->PUPDR &= ~(0x3 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); //clearing bit
+    pGPIOHandle->pGPIOx->PUPDR |= temp; //seting bit
+
+    //4. configure the op type
+    temp = (pGPIOHandle->GPIO_PinConfig.GPIO_PinOPType << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber);
+    pGPIOHandle->pGPIOx->OTYPER &= ~(0x1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber); //clearing bit
+    pGPIOHandle->pGPIOx->OTYPER |= temp; //setting bit
+    
+    //5. Configure the alt functionality 
+    if (pGPIOHandle->GPIO_PinConfig.GPIO_PinAltFuncMode == GPIO_MODE_ALTFN)
+    {
+        uint8_t temp1, temp2;
+
+        temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 8;
+        temp2 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 8;
+        pGPIOHandle->pGPIOx->AFR[temp1] &= (0xF << (4 * temp2)); //clearing bit
+        pGPIOHandle->pGPIOx->AFR[temp1] |= (pGPIOHandle->GPIO_PinConfig.GPIO_PinAltFuncMode << (4 * temp2)); //setting bit
+    }
 
 }
 
