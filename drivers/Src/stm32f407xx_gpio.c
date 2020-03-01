@@ -178,7 +178,7 @@ void GPIO_DeInit(GPIO_RegDef_t *pGPIOx)
 {
     if(pGPIOx == GPIOA)
     {
-        GPIOA_REG_RESET(0);
+        GPIOA_REG_RESET();
     }
     else if (pGPIOx == GPIOB)
     {
