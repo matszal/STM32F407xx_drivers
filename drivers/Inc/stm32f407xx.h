@@ -80,6 +80,9 @@
 
 /*****************peripheral register definition structures********************/
 
+/**
+ * Peripheral definition structure for GPIO register
+ */
 typedef struct
 {
     __vo uint32_t MODER;    /*  These bits configure the I/O direction mode
@@ -114,7 +117,9 @@ typedef struct
 
 }GPIO_RegDef_t;
 
-
+/**
+ * Peripheral definition structure for RCC register
+ */
 typedef struct
 {
     __vo uint32_t   CR;             /* Clock control register: Reserved must be kept at reset value */
@@ -151,6 +156,50 @@ typedef struct
 }RCC_RegDef_t;
 
 /**
+ * Peripheral definition structure for EXTI register
+ */
+typedef struct
+{
+    __vo uint32_t   IMR;            /* Interrupt mask register. Bits 23:31 are reserved
+                                        0: Interrupt request from line x is masked 
+                                        1: Interrupt request from line x is not masked */
+    __vo uint32_t   EMR;            /* Event mask register
+                                        0: Interrupt request from line x is masked 
+                                        1: Interrupt request from line x is not masked */
+    __vo uint32_t   RTSR;           /* Rising trigger selection register
+                                        0: Rising trigger disabled (for Event and Interrupt) for input line
+                                        1: Rising trigger enabled (for Event and Interrupt) for input line */
+    __vo uint32_t   FTSR;           /* Falling trigger selection register 
+                                        0: Falling trigger disabled (for Event and Interrupt) for input line
+                                        1: Falling trigger enabled (for Event and Interrupt) for input line */
+    __vo uint32_t   SWIER;          /* Software interrupt event register
+                                        If interrupt are enabled on line x in the EXTI_IMR register, writing '1' to SWIERx bit when it is
+                                        set at '0' sets the corresponding pending bit in the EXTI_PR register, thus resulting in an
+                                        interrupt request generation.This bit is cleared by clearing the corresponding bit in EXTI_PR
+                                        (by writing a 1 to the bit */
+    __vo uint32_t   PR;             /* Pending register 
+                                        0: No trigger request occurred
+                                        1: selected trigger request occurred
+                                        This bit is set when the selected edge event arrives on the external interrupt line.
+                                        This bit is cleared by programming it to ‘1’ */
+
+}EXTI_RegDef_t;
+
+/**
+ * Peripheral definition structure for SYSCFG register
+ */
+typedef struct
+{
+    __vo uint32_t   MEMRMP;         /* Memory remap register */
+    __vo uint32_t   PMC;            /* Peripheral mode configuration register */
+    __vo uint32_t   EXTICR[4];      /* External interrupt configuration register 1-4 */
+    __vo uint32_t   CMPCR;          /* Compensation cell controll register */
+    
+}SYSCFG_RegDef_t;
+
+
+
+/**
  * Peripheral definitions (Peripheral base addresses typecasted to xxx_RegDef_t)
  */
 #define GPIOA               ((GPIO_RegDef_t*)GPIOA_BASEADDR)
@@ -162,7 +211,9 @@ typedef struct
 #define GPIOG               ((GPIO_RegDef_t*)GPIOG_BASEADDR)
 #define GPIOH               ((GPIO_RegDef_t*)GPIOH_BASEADDR)
 #define GPIOI               ((GPIO_RegDef_t*)GPIOI_BASEADDR)
+
 #define RCC                 ((RCC_RegDef_t*)RCC_BASEADDR)
+#define EXTI                ((EXTI_RegDef_t*)EXTI_BASEADDR)
 
 /**
  * Clock enable macros for GPIOx peripherals
