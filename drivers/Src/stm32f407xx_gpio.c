@@ -157,6 +157,12 @@ void GPIO_Init(GPIO_Handle_t *pGPIOHandle)
         }
 
         // 2., configure the gpio port selection in syscfg_exticr
+        uint8_t temp1 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber / 4;
+        uint8_t temp2 = pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber % 4;
+        uint8_t portcode = GPIO_BASEADDR_TO_CODE(pGPIOHandle->pGPIOx);
+        
+        SYSFCG_PCLK_EN();
+        SYSCFG->EXTICR[temp1] = portcode << (temp2 * 4);
         // 3. enable the exti interrupt delivery using IMR
         EXTI->IMR|= 1 << pGPIOHandle->GPIO_PinConfig.GPIO_PinNumber;
 
@@ -341,11 +347,10 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
  * IRQ configuration and ISR handling 
  */
 /***********************************************************************
- * @fn              GPIO_IRQConfig
+ * @fn              GPIO_IRQInterruptConfig
  * @brief           This function configures an interrupt routine
  * 
  * @param[in]       IRQ number
- * @param[in]       IRQ priority
  * @param[in]       ENABLE or DISABLE macros
  * 
  * @return          none
@@ -353,9 +358,62 @@ void GPIO_ToggleOutputPin(GPIO_RegDef_t *pGPIOx, uint8_t PinNumber)
  * @note            none
  * 
  ***********************************************************************/
-void GPIO_IRQConfig(uint8_t IRQNumber, uint8_t IRQPriority, uint8_t EnorDi)
+void GPIO_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi)
 {
+    if(EnorDi == ENABLE)
+    {
+        if(IRQNumber <= 31)
+        {
+            *NVIC_ISER0 |= (1 << IRQNumber);
+        }
+        else if (IRQNumber > 31 && IRQNumber < 64)
+        {
+            *NVIC_ISER1 |= (1 << IRQNumber % 32);
+        }
+        else if (IRQNumber >= 64  && IRQNumber < 96)
+        {
+            *NVIC_ISER2 |= (1 << IRQNumber % 64);
+        }
+        
+    }
+    else
+    {
+        if(IRQNumber <= 31)
+        {
+            *NVIC_ICER0 |= (1 << IRQNumber);
+        }
+        else if (IRQNumber > 31 && IRQNumber < 64)
+        {
+            *NVIC_ICER1 |= (1 << IRQNumber % 32);
+        }
+        else if (IRQNumber >= 64  && IRQNumber < 96)
+        {
+            *NVIC_ICER2 |= (1 << IRQNumber % 64);
+        }
+    }
+}
 
+/**
+ * IRQ configuration and ISR handling 
+ */
+/***********************************************************************
+ * @fn              GPIO_IRQPriorityConfig
+ * @brief           This function configures interrupt priority
+ * 
+ * @param[in]       IRQ number
+ * @param[in]       IRQ priority
+ * 
+ * @return          none
+ * 
+ * @note            none
+ * 
+ ***********************************************************************/
+void GPIO_IRQPriorityConfig(uint8_t IRQNumber, uint8_t IRQPriority)
+{
+    uint8_t iprx = IRQNumber / 4;
+    uint8_t iprx_section = IRQNumber % 4;
+    uint8_t shift_amount = (8 * iprx_section) + (8 - NO_PR_BITS_IMPLEMENTED);
+    *(NVIC_PR_BASE_ADDR + (iprx * 4)) |= (IRQPriority <<  shift_amount);
 }
 
 /***********************************************************************
