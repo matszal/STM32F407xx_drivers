@@ -3,5 +3,11 @@
 
 int main(void)
 {
-	for(;;);
+	return 0;
+}
+
+void EXTI0_IRQHandler(void)
+{
+	//handle the interrupt
+	PIO_IRQHandling(0);
 }
