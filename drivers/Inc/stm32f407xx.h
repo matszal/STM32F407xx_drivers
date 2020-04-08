@@ -224,6 +224,24 @@ typedef struct
 }SYSCFG_RegDef_t;
 
 
+/**
+ * Peripheral definition structure for SPI register
+ */
+typedef struct
+{
+    __vo uint32_t   CR1;            /* SPI Control Register 1 - not used in I2S mode */
+    __vo uint32_t   CR2;            /* SPI Control Register 2 */
+    __vo uint32_t   SR;             /* SPI Status REgister */
+    __vo uint32_t   DR;             /* SPI Data Register */
+    __vo uint32_t   CRCPR;          /* SPI CRC polynomial register - not used in I2S mode */
+    __vo uint32_t   RXCRCR;         /* SPI RX CRC register - not used in I2S mode */
+    __vo uint32_t   TXCRCR;         /* SPI TX CRC register - not used in I2S mode */
+    __vo uint32_t   I2SCFGR;        /* SPI_I2S configuration register */
+    __vo uint32_t   I2SPR;          /* SPI_I2S prescaler register */
+    
+}SPI_RegDef_t;
+
+
 
 /**
  * Peripheral definitions (Peripheral base addresses typecasted to xxx_RegDef_t)
@@ -241,6 +259,10 @@ typedef struct
 #define RCC                 ((RCC_RegDef_t*)RCC_BASEADDR)
 #define EXTI                ((EXTI_RegDef_t*)EXTI_BASEADDR)
 #define SYSCFG              ((SYSCFG_RegDef_t*)SYSCFG_BASEADDR)
+
+#define SPI1				((SPI_RegDef_t*)SPI1_BASEADDR)
+#define SPI2				((SPI_RegDef_t*)SPI2_BASEADDR)
+#define SPI3				((SPI_RegDef_t*)SPI3_BASEADDR)
 
 /**
  * Clock enable macros for GPIOx peripherals
@@ -348,6 +370,13 @@ typedef struct
                                         (x == GPIOF) ? 5 : \
                                         (x == GPIOG) ? 6 : \
                                         (x == GPIOH) ? 7 : 0 )
+
+/**
+ * Macros to reset SPIx peripeherals
+ */
+#define SPI1_REG_RESET()                do{(RCC->APB2RSTR |= (1 << 0)); (RCC->APB2RSTR |= ~(1 << 0)); }while(0)
+#define SPI2_REG_RESET()                do{(RCC->APB1RSTR |= (1 << 0)); (RCC->APB1RSTR |= ~(1 << 0)); }while(0)
+#define SPI3_REG_RESET()                do{(RCC->APB1RSTR |= (1 << 0)); (RCC->APB1RSTR |= ~(1 << 0)); }while(0)
 
 
 /**
