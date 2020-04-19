@@ -34,6 +34,55 @@ typedef struct
 }SPI_Handle_t;
 
 
+/**
+ * @SPI_DeviceMode
+ */
+#define SPI_DEVICE_MODE_MASTER			0
+#define SPI_DEVICE_MODE_SLAVE			1
+
+/**
+ * @SPI_BusConfig
+ */
+#define SPI_BUS_CONFIG_FD				1
+#define SPI_BUS_CONFIG_HD				2
+#define SPI_BUS_CONFIG_SIMPLEX_RXONLY	3
+
+/**
+ * @SPI_SclkSpeed
+ */
+#define SPI_CLK_SPEED_DEV2				0
+#define SPI_CLK_SPEED_DEV4				1
+#define SPI_CLK_SPEED_DEV8				2
+#define SPI_CLK_SPEED_DEV16				3
+#define SPI_CLK_SPEED_DEV32				4
+#define SPI_CLK_SPEED_DEV64				5
+#define SPI_CLK_SPEED_DEV128			6
+#define SPI_CLK_SPEED_DEV256			7
+
+/**
+ * @SPI_DFF
+ */
+#define SPI_DFF_8BITS					0
+#define SPI_DFF_16BITS					1
+
+/**
+ * @CPOL
+ */
+#define SPI_CPOL_HIGH					1
+#define SPI_CPOL_LOW					0
+
+/**
+ * @CPHA
+ */
+#define SPI_CPHA_HIGH					1
+#define SPI_CPHA_LOW					0
+
+/**
+ * @SPI_SSM
+ */
+#define SPI_SSM_EN						1
+#define SPI_SSM_DI						0
+
 /****************************************************
  *          APIs supported by this driver           *
  ****************************************************/
