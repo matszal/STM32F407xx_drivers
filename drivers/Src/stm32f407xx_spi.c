@@ -78,6 +78,10 @@ void SPIx_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
  ***********************************************************************/
 void SPI_Init(SPI_Handle_t *pSPIHandle)
 {
+
+    // Enable the periheral clock
+    SPIx_PeriClockControl(pSPIHandle->pSPIx, ENABLE);
+    
     // Configure SPI_Cr1 register
     uint32_t tempreg = 0;
 
@@ -88,19 +92,19 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
     if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD)
     {
         // BIDI mode should be cleared
-        tempreg &= ~(1 << SPI_CR1_BIDI_MODE);
+        tempreg &= ~(1 << SPI_CR1_BIDIMODE);
     }
     else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_HD)
     {
         // BIDI mode should be set
-        tempreg |= (1 << SPI_CR1_BIDI_MODE);
+        tempreg |= (1 << SPI_CR1_BIDIMODE);
     }
     else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_SIMPLEX_RXONLY)
     {
         // BIDI mode should be cleared
-        tempreg &= ~(1 << SPI_CR1_BIDI_MODE);
+        tempreg &= ~(1 << SPI_CR1_BIDIMODE);
         // RX only should be set
-        tempreg |= (1 << SPI_CR1_RX_ONLY);
+        tempreg |= (1 << SPI_CR1_RXONLY);
     }
 
     // 3. Config the SPI clock speed
@@ -210,14 +214,57 @@ void SPI_DeInit(SPI_RegDef_t *pSPIx)
     }
     else if (pSPIx == SPI3)
     {
-        SPI3_REG_RESET();
+        SPI3_REG_RESET(); 
     }
+}
+
+uint8_t SPI_GetFlagStatus(SPI_RegDef_t *pSPIx, uint32_t FlagName)
+{
+    if(pSPIx->SR & FlagName)
+    {
+        return FLAG_SET;
+    }
+    return FLAG_RESET;   
 }
 
 /**
  * Data read and write
  */
-void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTXBuffer, uint32_t Len);
+/***********************************************************************
+ * @fn              SPI_SendData
+ * @brief           This is a implementation of SPI send data, this
+ *                  function is a blocking function
+ * 
+ * @param[in]       handle structure for the SPI register definition
+ * @param[in]       data pointer 
+ * @param[in]       length of the buffer
+ * 
+ * @return          none
+ * 
+ * @note            This function is blocking
+ * 
+ ***********************************************************************/
+void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTXBuffer, uint32_t Len)
+{
+    while (Len != 0)
+    {
+
+        while (SPI_GetFlagStatus(pSPIx, 1) != FLAG_RESET);
+
+        if(pSPIx->CR1 & (1 << SPI_CR1_DFF)) // 16bit
+        {
+            pSPIx->DR = *((uint16_t*)pTXBuffer);
+            Len -= 2;
+            (uint16_t*)pTXBuffer++;
+        }
+        else //8bit
+        {
+            pSPIx->DR = *pTXBuffer;
+            Len --;
+            pTXBuffer++;
+        }                    
+    }   
+}
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRXBuffer, uint32_t Len);
 
 /**
@@ -226,3 +273,18 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRXBuffer, uint32_t Len);
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void SPI_IRQHandling(uint8_t PinNumber);
 void SPI_IRQPriorityConfig(SPI_Handle_t *pHandle);
+
+/**
+ * Other Peripheral Control APIs
+ */
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
+{
+    if (EnOrDi == ENABLE)
+    {
+        pSPIx->CR1 |= ( 1 << SPI_CR1_SPE);
+    }
+    else
+    {
+        pSPIx->CR1 &= ~( 1 << SPI_CR1_SPE);
+    }
+}

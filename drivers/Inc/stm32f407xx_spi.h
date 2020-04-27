@@ -83,6 +83,14 @@ typedef struct
 #define SPI_SSM_EN						1
 #define SPI_SSM_DI						0
 
+/**
+ * SPI related status flags definitions
+ */
+#define SPI_TXE_FLAG	( 1 << SPI_SR_TXE )
+#define SPI_RXNE_FLAG	( 1 << SPI_SR_RXNE )
+#define SPI_BUSY_FLAG	( 1 << SPI_SR_BSY )
+
+
 /****************************************************
  *          APIs supported by this driver           *
  ****************************************************/
@@ -110,5 +118,10 @@ void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRXBuffer, uint32_t Len);
 void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
 void SPI_IRQHandling(uint8_t PinNumber);
 void SPI_IRQPriorityConfig(SPI_Handle_t *pHandle);
+
+/**
+ * Other Peripheral Control APIs
+ */
+void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi);
 
 #endif /* INC_STM32F407XX_SPI_H_ */
