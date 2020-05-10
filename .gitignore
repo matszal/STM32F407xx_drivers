@@ -23,3 +23,8 @@ Debug/Src/sysmem.o
 Debug/Src/sysmem.su
 Debug/Startup/startup_stm32f407vgtx.o
 Debug/Startup/subdir.mk
+*DS_Store
+._*
+.*
+Debug/
+*.launch

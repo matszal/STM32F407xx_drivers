@@ -86,7 +86,7 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
     uint32_t tempreg = 0;
 
     // 1. Config the device mode
-    tempreg |= pSPIHandle->SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR;
+    tempreg = pSPIHandle->SPIConfig.SPI_DeviceMode |= ( 1 << SPI_CR1_MSTR );
 
     // 2. Config the bus config
     if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD)
