@@ -83,10 +83,10 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
     SPIx_PeriClockControl(pSPIHandle->pSPIx, ENABLE);
     
     // Configure SPI_Cr1 register
-    uint32_t tempreg = 0;
+	uint32_t tempreg = 0;
 
     // 1. Config the device mode
-    tempreg = pSPIHandle->SPIConfig.SPI_DeviceMode |= ( 1 << SPI_CR1_MSTR );
+    tempreg = pSPIHandle->SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR;
 
     // 2. Config the bus config
     if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD)
@@ -108,85 +108,19 @@ void SPI_Init(SPI_Handle_t *pSPIHandle)
     }
 
     // 3. Config the SPI clock speed
-    switch (pSPIHandle->SPIConfig.SPI_SclkSpeed)
-    {
-        // Set specific bitfield to get clock speed rate f/DEVx
-    case SPI_CLK_SPEED_DEV2:
-        tempreg |= (0 << SPI_CR1_BR);
-        break;
-    case SPI_CLK_SPEED_DEV4:
-        tempreg |= (1 << SPI_CR1_BR);
-        break;
-    case SPI_CLK_SPEED_DEV8:
-        tempreg |= (2 << SPI_CR1_BR);
-        break;
-    case SPI_CLK_SPEED_DEV16:
-        tempreg |= (3 << SPI_CR1_BR);
-        break;
-    case SPI_CLK_SPEED_DEV32:
-        tempreg |= (4 << SPI_CR1_BR);
-        break;
-    case SPI_CLK_SPEED_DEV64:
-        tempreg |= (5 << SPI_CR1_BR);
-        break;
-    case SPI_CLK_SPEED_DEV128:
-        tempreg |= (6 << SPI_CR1_BR);
-        break;
-    case SPI_CLK_SPEED_DEV256:
-        tempreg |= (7 << SPI_CR1_BR);
-        break;
-    
-    default:
-        break;
-    }
+    tempreg |= pSPIHandle->SPIConfig.SPI_SclkSpeed << SPI_CR1_BR;
 
     // 4. Config the data frame format
-    if (pSPIHandle->SPIConfig.SPI_DFF == SPI_DFF_8BITS)
-    {
-        // Clear the DFF bit
-        tempreg &= ~(1 << SPI_CR1_DFF);
-    }
-    else if (pSPIHandle->SPIConfig.SPI_DFF == SPI_DFF_16BITS)
-    {
-        // Set the DFF bit
-        tempreg |= (1 << SPI_CR1_DFF);
-    }
-    
+    tempreg |= pSPIHandle->SPIConfig.SPI_DFF << SPI_CR1_DFF;
+
     // 5. Config the CPOL
-    if (pSPIHandle->SPIConfig.SPI_CPOL == SPI_CPOL_LOW)
-    {
-        // Clear the CPOL reg
-        tempreg &= ~(1 << SPI_CR1_CPOL);
-    }
-    else if (pSPIHandle->SPIConfig.SPI_CPOL == SPI_CPOL_HIGH)
-    {
-        // Set the CPOL reg
-        tempreg |= (1 << SPI_CR1_CPOL);
-    }
+    tempreg |= pSPIHandle->SPIConfig.SPI_CPOL << SPI_CR1_CPOL;
 
     // 6. Config the CPHA
-    if (pSPIHandle->SPIConfig.SPI_CPHA == SPI_CPHA_LOW)
-    {
-        // Clear the CPHA reg
-        tempreg &= ~(1 << SPI_CR1_CPHA);
-    }
-    else if (pSPIHandle->SPIConfig.SPI_CPHA == SPI_CPHA_HIGH)
-    {
-        // Set the CPHA reg
-        tempreg |= (1 << SPI_CR1_CPHA);
-    }
+    tempreg |= pSPIHandle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA;
 
     // 7. Config the SSM
-    if (pSPIHandle->SPIConfig.SPI_SSM == SPI_SSM_DI)
-    {
-        // Clear the SSM reg
-        tempreg &= ~(1 << SPI_CR1_SSM);
-    }
-    else if (pSPIHandle->SPIConfig.SPI_SSM == SPI_SSM_EN)
-    {
-        // Set the SSM reg
-        tempreg |= (1 << SPI_CR1_SSM);
-    }
+    tempreg |= pSPIHandle->SPIConfig.SPI_SSM << SPI_CR1_SSM;
 
     pSPIHandle->pSPIx->CR1 = tempreg;
 }
@@ -286,5 +220,17 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
     else
     {
         pSPIx->CR1 &= ~( 1 << SPI_CR1_SPE);
+    }
+}
+
+void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
+{
+    if (EnOrDi == ENABLE)
+    {
+        pSPIx->CR1 |= ( 1 << SPI_CR1_SSI);
+    }
+    else
+    {
+        pSPIx->CR1 &= ~( 1 << SPI_CR1_SSI);
     }
 }

@@ -22,6 +22,7 @@ typedef struct
 	uint8_t SPI_CPOL;
 	uint8_t SPI_CPHA;
 	uint8_t SPI_SSM;
+
 }SPI_Config_t;
 
 /**
@@ -37,8 +38,8 @@ typedef struct
 /**
  * @SPI_DeviceMode
  */
-#define SPI_DEVICE_MODE_MASTER			0
-#define SPI_DEVICE_MODE_SLAVE			1
+#define SPI_DEVICE_MODE_MASTER			1
+#define SPI_DEVICE_MODE_SLAVE			0
 
 /**
  * @SPI_BusConfig
@@ -50,14 +51,14 @@ typedef struct
 /**
  * @SPI_SclkSpeed
  */
-#define SPI_CLK_SPEED_DEV2				0
-#define SPI_CLK_SPEED_DEV4				1
-#define SPI_CLK_SPEED_DEV8				2
-#define SPI_CLK_SPEED_DEV16				3
-#define SPI_CLK_SPEED_DEV32				4
-#define SPI_CLK_SPEED_DEV64				5
-#define SPI_CLK_SPEED_DEV128			6
-#define SPI_CLK_SPEED_DEV256			7
+#define SPI_SCLK_SPEED_DIV2				0
+#define SPI_SCLK_SPEED_DIV4				1
+#define SPI_SCLK_SPEED_DIV8				2
+#define SPI_SCLK_SPEED_DIV16			3
+#define SPI_SCLK_SPEED_DIV32			4
+#define SPI_SCLK_SPEED_DIV64			5
+#define SPI_SCLK_SPEED_DIV128			6
+#define SPI_SCLK_SPEED_DIV256			7
 
 /**
  * @SPI_DFF
@@ -123,5 +124,6 @@ void SPI_IRQPriorityConfig(SPI_Handle_t *pHandle);
  * Other Peripheral Control APIs
  */
 void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi);
+void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi);
 
 #endif /* INC_STM32F407XX_SPI_H_ */
