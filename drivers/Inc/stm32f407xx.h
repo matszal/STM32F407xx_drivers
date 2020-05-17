@@ -303,7 +303,7 @@ typedef struct
 /**
  * Clock enable macros for SYSCFG
  */
-#define SYSFCG_PCLK_EN()                (RCC->APB2ENR |= (1<<14))
+#define SYSCFG_PCLK_EN()                (RCC->APB2ENR |= (1<<14))
 
 /**
  * Clock disable macros for GPIOx peripherals

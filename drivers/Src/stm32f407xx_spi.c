@@ -28,7 +28,7 @@
  * @note            none
  * 
  ***********************************************************************/
-void SPIx_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
+void SPI_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 {
     if (EnorDi == ENABLE)
     {
@@ -79,50 +79,52 @@ void SPIx_PeriClockControl(SPI_RegDef_t *pSPIx, uint8_t EnorDi)
 void SPI_Init(SPI_Handle_t *pSPIHandle)
 {
 
-    // Enable the periheral clock
-    SPIx_PeriClockControl(pSPIHandle->pSPIx, ENABLE);
-    
-    // Configure SPI_Cr1 register
+	//peripheral clock enable
+
+	SPI_PeriClockControl(pSPIHandle->pSPIx, ENABLE);
+
+	//first lets configure the SPI_CR1 register
+
 	uint32_t tempreg = 0;
 
-    // 1. Config the device mode
-    tempreg = pSPIHandle->SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR;
+	//1. configure the device mode
+	tempreg |= pSPIHandle->SPIConfig.SPI_DeviceMode << SPI_CR1_MSTR ;
 
-    // 2. Config the bus config
-    if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD)
-    {
-        // BIDI mode should be cleared
-        tempreg &= ~(1 << SPI_CR1_BIDIMODE);
-    }
-    else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_HD)
-    {
-        // BIDI mode should be set
-        tempreg |= (1 << SPI_CR1_BIDIMODE);
-    }
-    else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_SIMPLEX_RXONLY)
-    {
-        // BIDI mode should be cleared
-        tempreg &= ~(1 << SPI_CR1_BIDIMODE);
-        // RX only should be set
-        tempreg |= (1 << SPI_CR1_RXONLY);
-    }
+	//2. Configure the bus config
+	if(pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_FD)
+	{
+		//bidi mode should be cleared
+		tempreg &= ~( 1 << SPI_CR1_BIDIMODE);
 
-    // 3. Config the SPI clock speed
-    tempreg |= pSPIHandle->SPIConfig.SPI_SclkSpeed << SPI_CR1_BR;
+	}else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_HD)
+	{
+		//bidi mode should be set
+		tempreg |= ( 1 << SPI_CR1_BIDIMODE);
+	}else if (pSPIHandle->SPIConfig.SPI_BusConfig == SPI_BUS_CONFIG_SIMPLEX_RXONLY)
+	{
+		//BIDI mode should be cleared
+		tempreg &= ~( 1 << SPI_CR1_BIDIMODE);
+		//RXONLY bit must be set
+		tempreg |= ( 1 << SPI_CR1_RXONLY);
+	}
 
-    // 4. Config the data frame format
-    tempreg |= pSPIHandle->SPIConfig.SPI_DFF << SPI_CR1_DFF;
+	// 3. Configure the spi serial clock speed (baud rate)
+	tempreg |= pSPIHandle->SPIConfig.SPI_SclkSpeed << SPI_CR1_BR;
 
-    // 5. Config the CPOL
-    tempreg |= pSPIHandle->SPIConfig.SPI_CPOL << SPI_CR1_CPOL;
+	//4.  Configure the DFF
+	tempreg |= pSPIHandle->SPIConfig.SPI_DFF << SPI_CR1_DFF;
 
-    // 6. Config the CPHA
-    tempreg |= pSPIHandle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA;
+	//5. configure the CPOL
+	tempreg |= pSPIHandle->SPIConfig.SPI_CPOL << SPI_CR1_CPOL;
+
+	//6 . configure the CPHA
+	tempreg |= pSPIHandle->SPIConfig.SPI_CPHA << SPI_CR1_CPHA;
 
     // 7. Config the SSM
-    tempreg |= pSPIHandle->SPIConfig.SPI_SSM << SPI_CR1_SSM;
+	tempreg |= pSPIHandle->SPIConfig.SPI_SSM << SPI_CR1_SSM;
 
-    pSPIHandle->pSPIx->CR1 = tempreg;
+	pSPIHandle->pSPIx->CR1 = tempreg;
+
 }
 
 /***********************************************************************
@@ -182,8 +184,7 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTXBuffer, uint32_t Len)
 {
     while (Len != 0)
     {
-
-        while (SPI_GetFlagStatus(pSPIx, 1) != FLAG_RESET);
+        while (SPI_GetFlagStatus(pSPIx, SPI_TXE_FLAG) == FLAG_RESET);
 
         if(pSPIx->CR1 & (1 << SPI_CR1_DFF)) // 16bit
         {
@@ -193,10 +194,10 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTXBuffer, uint32_t Len)
         }
         else //8bit
         {
-            pSPIx->DR = *pTXBuffer;
+        	pSPIx->DR = *pTXBuffer;
             Len --;
             pTXBuffer++;
-        }                    
+        }
     }   
 }
 void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRXBuffer, uint32_t Len);
