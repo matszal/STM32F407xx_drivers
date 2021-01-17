@@ -63,7 +63,7 @@ void SPI2_Inits(void)
 
 int main(void)
 {
-	char user_data[] = "Hello world";
+	char user_data[] = "Hello o";
 
 	//this function is used to initialize the GPIO pins to behave as SPI2 pins
 	SPI2_GPIOInits();

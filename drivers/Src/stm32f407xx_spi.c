@@ -200,18 +200,22 @@ void SPI_SendData(SPI_RegDef_t *pSPIx, uint8_t *pTXBuffer, uint32_t Len)
         }
     }   
 }
-void SPI_ReceiveData(SPI_RegDef_t *pSPIx, uint8_t *pRXBuffer, uint32_t Len);
 
-/**
- * IRQ configuration and ISR handling 
- */
-void SPI_IRQInterruptConfig(uint8_t IRQNumber, uint8_t EnorDi);
-void SPI_IRQHandling(uint8_t PinNumber);
-void SPI_IRQPriorityConfig(SPI_Handle_t *pHandle);
+/***********************************************************************
+ ******************* Other Peripheral Control APIs *********************
+ ***********************************************************************/
 
-/**
- * Other Peripheral Control APIs
- */
+/***********************************************************************
+ * @fn              SPI_PeripheralControl
+ * @brief           TODO
+ * 
+ * @param[in]       TODO
+ * 
+ * @return          none
+ * 
+ * @note            none
+ * 
+ ***********************************************************************/
 void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
 {
     if (EnOrDi == ENABLE)
@@ -224,6 +228,17 @@ void SPI_PeripheralControl(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
     }
 }
 
+/***********************************************************************
+ * @fn              SPI_SSIConfig
+ * @brief           TODO
+ * 
+ * @param[in]       TODO
+ * 
+ * @return          none
+ * 
+ * @note            none
+ * 
+ ***********************************************************************/
 void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
 {
     if (EnOrDi == ENABLE)
@@ -233,5 +248,29 @@ void SPI_SSIConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
     else
     {
         pSPIx->CR1 &= ~( 1 << SPI_CR1_SSI);
+    }
+}
+
+
+/***********************************************************************
+ * @fn              SPI_SSOEConfig
+ * @brief           TODO
+ * 
+ * @param[in]       TODO
+ * 
+ * @return          none
+ * 
+ * @note            none
+ * 
+ ***********************************************************************/
+void SPI_SSOEConfig(SPI_RegDef_t *pSPIx, uint8_t EnOrDi)
+{
+    if (EnOrDi == ENABLE)
+    {
+        pSPIx->CR2 |= ( 1 << SPI_CR2_SSOE);
+    }
+    else
+    {
+        pSPIx->CR2 &= ~( 1 << SPI_CR2_SSOE);
     }
 }
